@@ -11,6 +11,7 @@
       "@services/*": ["services/*"],
       "@routes/*": ["routes/*"],
       "@const/*": ["const/*"],
+      "@models/*": ["models/*"],
       "@util/*": ["util/*"]
     },
     "esModuleInterop": true,
