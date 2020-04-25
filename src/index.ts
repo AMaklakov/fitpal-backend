@@ -6,18 +6,19 @@ import { apiRoutes } from '@routes/api'
 import { ADDRESS, PORT } from '@const/config'
 import fastifyHelmet from 'fastify-helmet'
 import fastifyCors from 'fastify-cors'
+import { HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 
 sourceMapSupport.install()
 
 const server = fastify({
   logger: true,
-  // http2: true,
-  // https: {
-  //   allowHTTP1: true,
-  //   key: HTTPS_KEY,
-  //   cert: HTTPS_CERT,
-  //   ca: [],
-  // },
+  http2: true,
+  https: {
+    allowHTTP1: true,
+    key: HTTPS_KEY,
+    cert: HTTPS_CERT,
+    ca: [],
+  },
 })
 
 server
@@ -72,13 +73,13 @@ server
 //   exposeRoute: true,
 // })
 
-server.ready(err => {
+server.ready((err) => {
   if (err) throw err
   // server.swagger()
 })
 
-process.on('uncaughtException', error => console.error(error))
-process.on('unhandledRejection', error => console.error(error))
+process.on('uncaughtException', (error) => console.error(error))
+process.on('unhandledRejection', (error) => console.error(error))
 
 server.listen(PORT ?? 3001, ADDRESS, (err, address) => {
   if (err) {
