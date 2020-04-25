@@ -10,6 +10,7 @@
   ],
   "rules": {
     "no-console": "error",
+    "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {

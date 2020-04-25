@@ -1,13 +1,13 @@
 import { MomentInput } from 'moment'
 
-export interface TrainingModel {
+export interface ITraining {
   id: string
   date: MomentInput
   name: string
   exerciseList: any
 }
 
-export const isTrainingValid = (training?: Partial<TrainingModel>): boolean => {
+export const isTrainingValid = (training?: Partial<ITraining>): boolean => {
   if (!training) {
     return false
   }

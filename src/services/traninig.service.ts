@@ -1,5 +1,4 @@
 import moment, { MomentInput } from 'moment'
-import { generateId } from '@util/id.util'
 
 export enum DateFormatEnum {
   Default = 'DD.MM.YYYY',
@@ -13,13 +12,13 @@ export const formatDate = (date: MomentInput, format: string = DateFormatEnum.De
 
 const trainings = [
   {
-    id: generateId(),
+    id: '1',
     name: 'Training today',
     date: moment(),
     exerciseList: [],
   },
   {
-    id: generateId(),
+    id: '12',
     name: 'Training today 2',
     date: moment(),
     exerciseList: [],
@@ -27,7 +26,7 @@ const trainings = [
 ]
 
 export const getTrainingById = (id: string) => {
-  return null
+  return trainings.find((x) => x.id === id)
 }
 
 export const getTrainingByDate = (date: MomentInput) => {
