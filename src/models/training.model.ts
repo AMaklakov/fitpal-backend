@@ -7,6 +7,8 @@ export interface ITraining {
   exerciseList: any
 }
 
+export type ITrainingCreate = Omit<ITraining, 'id'>
+
 export const isTrainingValid = (training?: Partial<ITraining>): boolean => {
   if (!training) {
     return false

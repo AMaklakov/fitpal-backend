@@ -1,4 +1,6 @@
 import moment, { MomentInput } from 'moment'
+import { isTrainingValid, ITraining, ITrainingCreate } from '@models/training.model'
+import { generateId } from '@util/id.util'
 
 export enum DateFormatEnum {
   Default = 'DD.MM.YYYY',
@@ -10,7 +12,7 @@ export const formatDate = (date: MomentInput, format: string = DateFormatEnum.De
   return moment(date).format(format)
 }
 
-const trainings = [
+let trainings: ITraining[] = [
   {
     id: '1',
     name: 'Training today',
@@ -33,4 +35,15 @@ export const getTrainingByDate = (date: MomentInput) => {
   const searchDate = formatDate(date)
 
   return trainings.filter((x) => formatDate(x.date) === searchDate)
+}
+
+export const createTraining = (req: ITrainingCreate): ITraining | null => {
+  const training: ITraining = { ...req, id: generateId() }
+
+  if (!isTrainingValid(training)) {
+    return null
+  }
+
+  trainings = trainings.concat(training)
+  return training
 }
