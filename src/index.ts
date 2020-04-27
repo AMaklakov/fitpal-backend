@@ -6,22 +6,27 @@ import { apiRoutes } from '@routes/api'
 import { ADDRESS, PORT } from '@const/config'
 import fastifyHelmet from 'fastify-helmet'
 import fastifyCors from 'fastify-cors'
-import { HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
+import fastifyStatic from 'fastify-static'
+import path from 'path'
 
 sourceMapSupport.install()
 
 const server = fastify({
   logger: true,
-  http2: true,
-  https: {
-    allowHTTP1: true,
-    key: HTTPS_KEY,
-    cert: HTTPS_CERT,
-    ca: [],
-  },
+  // http2: true,
+  // https: {
+  //   allowHTTP1: true,
+  //   key: HTTPS_KEY,
+  //   cert: HTTPS_CERT,
+  //   ca: [],
+  // },
 })
 
 server
+  .register(fastifyStatic, {
+    root: path.join(__dirname, '..', 'public'),
+    dotfiles: 'allow',
+  })
   // @ts-ignore
   .register(fastifyHelmet)
   // @ts-ignore
