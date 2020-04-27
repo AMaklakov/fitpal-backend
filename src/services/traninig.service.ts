@@ -60,3 +60,16 @@ export const removeTrainingById = (id: string): boolean => {
   trainings = trainings.filter((x) => x.id !== id)
   return true
 }
+
+export const updateTraining = (id: string, req: ITraining): ITraining | null => {
+  if (!isTrainingValid(req)) {
+    return null
+  }
+
+  if (!trainings.find((x) => x.id === id)) {
+    return null
+  }
+
+  trainings = trainings.filter((x) => x.id !== id).concat(req)
+  return req
+}
