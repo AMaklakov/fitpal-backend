@@ -47,3 +47,29 @@ export const createTraining = (req: ITrainingCreate): ITraining | null => {
   trainings = trainings.concat(training)
   return training
 }
+
+export const removeTrainingById = (id: string): boolean => {
+  if (!id) {
+    return false
+  }
+
+  if (!trainings.find((x) => x.id === id)) {
+    return false
+  }
+
+  trainings = trainings.filter((x) => x.id !== id)
+  return true
+}
+
+export const updateTraining = (id: string, req: ITraining): ITraining | null => {
+  if (!isTrainingValid(req)) {
+    return null
+  }
+
+  if (!trainings.find((x) => x.id === id)) {
+    return null
+  }
+
+  trainings = trainings.filter((x) => x.id !== id).concat(req)
+  return req
+}

@@ -1,6 +1,12 @@
 import { FastifyInstance, Plugin } from 'fastify'
 import { IncomingMessage, ServerResponse } from 'http'
-import { createTraining, getTrainingByDate, getTrainingById } from '@services/traninig.service'
+import {
+  createTraining,
+  getTrainingByDate,
+  getTrainingById,
+  removeTrainingById,
+  updateTraining,
+} from '@services/traninig.service'
 
 export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
   server.get('/', (req, reply) => {
@@ -54,6 +60,43 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     reply.send({
       training: createdTraining,
     })
+  })
+
+  server.put('/:id', (req, reply) => {
+    const trainingId: string = req.params.id
+    const training = req.body.training
+    const updatedTraining = updateTraining(trainingId, training)
+
+    if (updatedTraining === null) {
+      reply.code(400)
+      reply.send({
+        message: 'Invalid training or training not found',
+      })
+
+      return
+    }
+
+    reply.code(200)
+    reply.send({
+      training: updatedTraining,
+    })
+  })
+
+  server.delete('/:id', (req, reply) => {
+    const trainingId: string = req.params.id
+    const isSuccessfulDeleted = removeTrainingById(trainingId)
+
+    if (!isSuccessfulDeleted) {
+      reply.code(400)
+      reply.send({
+        message: 'Cannot delete',
+      })
+
+      return
+    }
+
+    reply.code(200)
+    reply.send()
   })
 
   next()
