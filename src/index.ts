@@ -8,18 +8,19 @@ import fastifyHelmet from 'fastify-helmet'
 import fastifyCors from 'fastify-cors'
 import fastifyStatic from 'fastify-static'
 import path from 'path'
+import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 
 sourceMapSupport.install()
 
 const server = fastify({
   logger: true,
-  // http2: true,
-  // https: {
-  //   allowHTTP1: true,
-  //   key: HTTPS_KEY,
-  //   cert: HTTPS_CERT,
-  //   ca: [],
-  // },
+  http2: true,
+  https: {
+    allowHTTP1: true,
+    key: HTTPS_KEY,
+    cert: HTTPS_CERT,
+    ca: [HTTPS_CA],
+  },
 })
 
 server
@@ -33,39 +34,6 @@ server
   .register(fastifyCors, { origin: false })
   .register(fastifyBlipp)
   .register(apiRoutes, { prefix: '/api/v1' })
-// @ts-ignore
-// .addHook('onRequest', (req, reply, payload, done) => {
-//   console.log(req, reply, payload)
-//   done()
-// })
-// // @ts-ignore
-// .addHook('preSerialization', (req, reply, payload, done) => {
-//   console.log(req, reply, payload)
-//   done()
-// })
-// // @ts-ignore
-// .addHook('preHandler', (req, reply, payload, done) => {
-//   console.log(req, reply, payload)
-//   done()
-// })
-// // @ts-ignore
-// .addHook('preParsing', (req, reply, payload, done) => {
-//   console.log(req, reply, payload)
-//   done()
-// })
-// @ts-ignore
-// .addHook('onResponse', (req, res, done) => {
-//   res.header('Access-Control-Allow-Origin', req.headers.origin)
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-//   res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
-//   res.header('Access-Control-Allow-Credentials', 'true')
-//   // if it's preflight packet, send 200
-//   if (req.method === 'OPTIONS') {
-//     res.sendStatus(200)
-//   }
-//
-//   done()
-// })
 // .register(fastifySwagger, {
 //   routePrefix: '/documentation',
 //   swagger: {
