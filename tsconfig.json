@@ -12,11 +12,13 @@
       "@routes/*": ["routes/*"],
       "@const/*": ["const/*"],
       "@models/*": ["models/*"],
+      "@schemas/*": ["schemas/*"],
       "@util/*": ["util/*"]
     },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "plugins": [{ "transform": "typescript-transform-paths" }]
   },
   "include": ["src/**/*.ts"],
