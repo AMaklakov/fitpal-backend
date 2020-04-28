@@ -3,13 +3,14 @@ import sourceMapSupport from 'source-map-support'
 import fastify from 'fastify'
 import fastifyBlipp from 'fastify-blipp'
 import { apiRoutes } from '@routes/api'
-import { ADDRESS, PORT, USE_HTTPS } from '@const/config'
+import { ADDRESS, DB_ADDRESS, PORT, USE_HTTPS } from '@const/config'
 import fastifyHelmet from 'fastify-helmet'
 import fastifyCors from 'fastify-cors'
 import fastifyStatic from 'fastify-static'
 import path from 'path'
 import dotenvFlow from 'dotenv-flow'
 import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
+import { connectToDb } from '@util/connect'
 
 sourceMapSupport.install()
 dotenvFlow.config()
@@ -69,4 +70,5 @@ server.listen(PORT, ADDRESS, (err, address) => {
 
   server.blipp()
   server.log.info(`server listening on ${address}`)
+  connectToDb({ dbUrl: DB_ADDRESS, logger: server.log })
 })
