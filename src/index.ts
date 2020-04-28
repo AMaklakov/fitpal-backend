@@ -3,17 +3,18 @@ import sourceMapSupport from 'source-map-support'
 import fastify from 'fastify'
 import fastifyBlipp from 'fastify-blipp'
 import { apiRoutes } from '@routes/api'
-import { ADDRESS, PORT } from '@const/config'
+import { ADDRESS, PORT, USE_HTTPS } from '@const/config'
 import fastifyHelmet from 'fastify-helmet'
 import fastifyCors from 'fastify-cors'
 import fastifyStatic from 'fastify-static'
 import path from 'path'
+import dotenvFlow from 'dotenv-flow'
 import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 
 sourceMapSupport.install()
+dotenvFlow.config()
 
-const server = fastify({
-  logger: true,
+const serverHttpsOptions = {
   http2: true,
   https: {
     allowHTTP1: true,
@@ -21,6 +22,11 @@ const server = fastify({
     cert: HTTPS_CERT,
     ca: [HTTPS_CA],
   },
+}
+
+const server = fastify({
+  logger: true,
+  ...(USE_HTTPS ? serverHttpsOptions : {}),
 })
 
 server
@@ -54,13 +60,13 @@ server.ready((err) => {
 process.on('uncaughtException', (error) => console.error(error))
 process.on('unhandledRejection', (error) => console.error(error))
 
-server.listen(PORT ?? 3001, ADDRESS, (err, address) => {
+server.listen(PORT, ADDRESS, (err, address) => {
   if (err) {
     console.log(err)
     server.log.error(err)
     process.exit(1)
   }
 
-  server.log.info(`server listening on ${address}`)
   server.blipp()
+  server.log.info(`server listening on ${address}`)
 })
