@@ -45,24 +45,17 @@ export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, Server
     return
   })
 
-  // server.post('/logout', (req, reply) => {
-  //   const training = req.body.training
-  //   const createdTraining = createTraining(training)
-  //
-  //   if (createdTraining === null) {
-  //     reply.code(400)
-  //     reply.send({
-  //       message: 'Invalid training',
-  //     })
-  //
-  //     return
-  //   }
-  //
-  //   reply.code(201)
-  //   reply.send({
-  //     training: createdTraining,
-  //   })
-  // })
+  server.post('/logout', { preValidation: [server.verifyJwt] }, (req, reply) => {
+    // token should already be provided (from preValidation)
+    const token = req.headers.authorization?.split(' ')?.[1]
+
+    if (!token) {
+      reply.code(401).send({ message: 'unauthorized' })
+      return
+    }
+
+    reply.code(201).send()
+  })
 
   next()
 }
