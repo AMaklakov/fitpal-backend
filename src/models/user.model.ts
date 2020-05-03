@@ -1,5 +1,5 @@
 import { Document } from 'mongoose'
-import { isPresent } from '@util/type.util'
+import { isPresent, WithRequired } from '@util/type.util'
 
 export interface IUser {
   _id: string
@@ -19,13 +19,13 @@ export interface IUser {
   updatedAt: number
 }
 
-export type ICreateUser = Partial<Omit<IUser, '_id'>>
+export type ICreateUser = WithRequired<Omit<IUser, '_id' | 'createdAt' | 'updatedAt'>, 'email' | 'password' | 'weight'>
 
 export type IAuth = Pick<IUser, 'password' | 'email'>
 
 export type IUserDocument = IUser & Document
 
-export const validateUser = (user: ICreateUser): user is Omit<IUser, '_id'> => {
+export const validateUser = (user: ICreateUser): user is ICreateUser => {
   if (!user) {
     return false
   }
