@@ -19,6 +19,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "typeRoots": ["node_modules/@types", "src/models/types"],
     "plugins": [{ "transform": "typescript-transform-paths" }]
   },
   "include": ["src/**/*.ts"],
