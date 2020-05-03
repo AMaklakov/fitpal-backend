@@ -11,6 +11,7 @@ import path from 'path'
 import dotenvFlow from 'dotenv-flow'
 import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 import { connectToDb } from '@util/connect'
+import { jwtMiddleware } from '@middlewares/jwt.middleware'
 
 sourceMapSupport.install()
 dotenvFlow.config()
@@ -35,7 +36,7 @@ server
     root: path.join(__dirname, '..', 'public'),
     dotfiles: 'allow',
   })
-  // @ts-ignore
+  .register(jwtMiddleware)
   .register(fastifyHelmet)
   // @ts-ignore
   .register(fastifyCors, { origin: false })
