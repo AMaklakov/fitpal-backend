@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { createExercise, getExercises } from '@services/exercise.service'
 
 export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
-  server.get('/', async (req, reply) => {
+  server.get('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
     const exercises = await getExercises()
 
     reply.code(200)
@@ -12,7 +12,7 @@ export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     return
   })
 
-  server.get('/:id', async (req, reply) => {
+  server.get('/:id', { preValidation: [server.verifyJwt] }, async (req, reply) => {
     const exercises = await getExercises({
       _id: req.params.id,
     })
@@ -23,7 +23,7 @@ export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     return
   })
 
-  server.post('/', async (req, reply) => {
+  server.post('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
     const exercise = req.body?.exercise
 
     const createdExercise = await createExercise(exercise)
