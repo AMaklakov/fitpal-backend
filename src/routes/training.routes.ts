@@ -9,7 +9,7 @@ import {
 } from '@services/traninig.service'
 
 export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
-  server.get('/', (req, reply) => {
+  server.get('/', { preValidation: [server.verifyJwt] }, (req, reply) => {
     const date = req.query.date
     const trainings = getTrainingByDate(date)
 
@@ -26,7 +26,7 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     reply.send(trainings)
   })
 
-  server.get('/:id', (req, reply) => {
+  server.get('/:id', { preValidation: [server.verifyJwt] }, (req, reply) => {
     const trainingId: string = req.params.id
     const training = getTrainingById(trainingId)
 
@@ -43,7 +43,7 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     reply.send(training)
   })
 
-  server.post('/', (req, reply) => {
+  server.post('/', { preValidation: [server.verifyJwt] }, (req, reply) => {
     const training = req.body.training
     const createdTraining = createTraining(training)
 
@@ -62,7 +62,7 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     })
   })
 
-  server.put('/:id', (req, reply) => {
+  server.put('/:id', { preValidation: [server.verifyJwt] }, (req, reply) => {
     const trainingId: string = req.params.id
     const training = req.body.training
     const updatedTraining = updateTraining(trainingId, training)
@@ -82,7 +82,7 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     })
   })
 
-  server.delete('/:id', (req, reply) => {
+  server.delete('/:id', { preValidation: [server.verifyJwt] }, (req, reply) => {
     const trainingId: string = req.params.id
     const isSuccessfulDeleted = removeTrainingById(trainingId)
 
