@@ -5,7 +5,7 @@ const { ObjectId } = Types
 
 const schema: Schema<IExerciseDocument> = new Schema({
   _id: { type: ObjectId, auto: true },
-  // userId: { type: ObjectId, ref: "User"  },
+  userId: { type: ObjectId, ref: 'User' },
 
   name: { type: String, required: true },
   type: { type: Number, enum: [0, 1, 2], default: 0 },

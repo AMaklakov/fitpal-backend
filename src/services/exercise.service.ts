@@ -21,6 +21,17 @@ export const getExercises = async (filters?: Partial<IExercise>) => {
     filtersQuery._id = filters?._id
   }
 
+  // if (filters?.userId) {
+  //   filtersQuery.userId = {
+  //     $or: [
+  //       {
+  //         $eq: filters.userId,
+  //       },
+  //       { $exists: false },
+  //     ],
+  //   }
+  // }
+
   try {
     const exercises = await ExerciseSchema.find(filtersQuery)
     return exercises
@@ -29,13 +40,13 @@ export const getExercises = async (filters?: Partial<IExercise>) => {
   }
 }
 
-export const createExercise = async (ex: Partial<ICreateExercise>): Promise<ICreateExercise | null> => {
-  if (!isExerciseValid(ex)) {
+export const createExercise = async (ex: Partial<ICreateExercise>, userId: string): Promise<ICreateExercise | null> => {
+  if (!isExerciseValid(ex) || !userId) {
     return null
   }
 
   try {
-    const createdExercise = await ExerciseSchema.create(ex)
+    const createdExercise = await ExerciseSchema.create({ ...ex, name: ex?.name?.trim(), userId })
     return createdExercise
   } catch (e) {
     return null

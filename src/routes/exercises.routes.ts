@@ -26,7 +26,7 @@ export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
   server.post('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
     const exercise = req.body?.exercise
 
-    const createdExercise = await createExercise(exercise)
+    const createdExercise = await createExercise(exercise, req.headers.user)
     if (createdExercise === null) {
       reply.code(400)
       reply.send({

@@ -23,6 +23,7 @@ export enum ExerciseTypes {
 
 export interface IExercise {
   _id: string
+  userId?: string
 
   type: ExerciseTypes
   name: string
@@ -46,16 +47,16 @@ const isTypeValid = (type?: ExerciseTypes): boolean => {
   }
 }
 
-export type ICreateExercise = Omit<IExercise, '_id'>
+export type ICreateExercise = Omit<IExercise, '_id' | 'userId'>
 
-export const isExerciseValid = (exercise?: ICreateExercise | Partial<ICreateExercise>): boolean => {
+export const isExerciseValid = (exercise?: ICreateExercise | Partial<ICreateExercise>): exercise is ICreateExercise => {
   if (!isPresent(exercise)) {
     return false
   }
 
   const { name, type } = exercise
 
-  if (!name) {
+  if (!name || !name.trim()) {
     return false
   }
 
