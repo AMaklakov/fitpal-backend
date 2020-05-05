@@ -4,11 +4,9 @@ import { createExercise, getExercises } from '@services/exercise.service'
 
 export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
   server.get('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
-    const exercises = await getExercises()
+    const exercises = await getExercises({ userId: req.headers.user })
 
-    reply.code(200)
-    reply.send(exercises)
-
+    reply.code(200).send({ exercises })
     return
   })
 

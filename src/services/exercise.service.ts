@@ -15,26 +15,23 @@ export const fillWithDefaultExercises = async () => {
 }
 
 export const getExercises = async (filters?: Partial<IExercise>) => {
-  const filtersQuery: FilterQuery<IExerciseDocument> = {}
+  const filtersQuery: FilterQuery<IExerciseDocument> = {
+    userId: { $exists: false },
+  }
 
   if (filters?._id) {
     filtersQuery._id = filters?._id
   }
 
-  // if (filters?.userId) {
-  //   filtersQuery.userId = {
-  //     $or: [
-  //       {
-  //         $eq: filters.userId,
-  //       },
-  //       { $exists: false },
-  //     ],
-  //   }
-  // }
-
   try {
-    const exercises = await ExerciseSchema.find(filtersQuery)
-    return exercises
+    const commonExercises: IExercise[] = await ExerciseSchema.find(filtersQuery)
+    let customExercises: IExercise[] = []
+
+    if (filters?.userId) {
+      customExercises = await ExerciseSchema.find({ userId: filters.userId })
+    }
+
+    return commonExercises.concat(customExercises)
   } catch (e) {
     return null
   }
