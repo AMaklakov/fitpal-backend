@@ -1,5 +1,6 @@
 import { model, Schema, Types } from 'mongoose'
 import { IUserDocument } from '@models/user.model'
+import moment from 'moment'
 
 const { ObjectId } = Types
 
@@ -17,12 +18,12 @@ const schema: Schema<IUserDocument> = new Schema({
   weight: { type: Number, required: true },
   isMale: { type: Boolean, required: true, default: true },
 
-  updatedAt: { type: Number, default: Date.now() },
-  createdAt: { type: Number, default: Date.now() },
+  updatedAt: { type: Date, default: moment() },
+  createdAt: { type: Date, default: moment() },
 })
 
 schema.pre<IUserDocument>('save', function () {
-  this.updatedAt = Date.now()
+  this.updatedAt = moment()
 })
 
 export const UserSchema = model<IUserDocument>('User', schema)

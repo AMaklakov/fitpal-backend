@@ -1,5 +1,6 @@
 import { Document } from 'mongoose'
 import { isPresent, WithRequired } from '@util/type.util'
+import { MomentInput } from 'moment'
 
 export interface IUser {
   _id: string
@@ -15,8 +16,8 @@ export interface IUser {
   age: number
   weight: number
 
-  createdAt: number
-  updatedAt: number
+  createdAt: MomentInput
+  updatedAt: MomentInput
 }
 
 export type ICreateUser = WithRequired<Omit<IUser, '_id' | 'createdAt' | 'updatedAt'>, 'email' | 'password' | 'weight'>

@@ -1,6 +1,7 @@
 import { assertUnreachable } from '@util/assert-unreachable'
 import { isPresent } from '@util/type.util'
 import { Document } from 'mongoose'
+import { MomentInput } from 'moment'
 
 export enum ExerciseTypes {
   /**
@@ -27,6 +28,9 @@ export interface IExercise {
 
   type: ExerciseTypes
   name: string
+
+  createdAt: MomentInput
+  updatedAt: MomentInput
 }
 
 export type IExerciseDocument = IExercise & Document
