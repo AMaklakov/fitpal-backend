@@ -1,6 +1,6 @@
 import { FastifyInstance, Plugin } from 'fastify'
 import { IncomingMessage, ServerResponse } from 'http'
-import { createExercise, getExercises } from '@services/exercise.service'
+import { createExercise, getExercises, updateExercise } from '@services/exercise.service'
 
 export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
   server.get('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
@@ -38,6 +38,20 @@ export const exerciseRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     reply.send({
       exercise: createdExercise,
     })
+  })
+
+  server.put('/:id', { preValidation: [server.verifyJwt] }, async (req, reply) => {
+    const user = req.headers.user
+    const exercise = req.body?.exercise
+
+    const updated = await updateExercise(exercise, user)
+    if (updated === null) {
+      reply.code(400).send({ message: 'Invalid exercise' })
+      return
+    }
+
+    reply.code(200).send({ exercise: updated })
+    return
   })
 
   next()

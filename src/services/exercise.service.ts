@@ -49,3 +49,28 @@ export const createExercise = async (ex: Partial<ICreateExercise>, userId: strin
     return null
   }
 }
+
+export const updateExercise = async (ex: IExercise, userId: string): Promise<IExercise | null> => {
+  if (!isExerciseValid(ex) || !userId) {
+    return null
+  }
+
+  const filters: FilterQuery<IExerciseDocument> = { _id: ex._id, userId }
+
+  delete ex._id
+  delete ex.userId
+  delete ex.createdAt
+  delete ex.updatedAt
+
+  try {
+    const updated = await ExerciseSchema.updateOne(filters, ex)
+
+    if (updated.ok !== 1) {
+      return null
+    }
+
+    return await ExerciseSchema.findOne(filters)
+  } catch (e) {
+    return null
+  }
+}
