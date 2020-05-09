@@ -1,75 +1,83 @@
-import moment, { MomentInput } from 'moment'
 import { isTrainingValid, ITraining, ITrainingCreate } from '@models/training.model'
-import { generateId } from '@util/id.util'
+import { TrainingSchema } from '@schemas/training.schema'
+import { MongooseFilterQuery } from 'mongoose'
+import { getEndOfDay, getStartOfDay } from '@util/date.util'
 
-export enum DateFormatEnum {
-  Default = 'DD.MM.YYYY',
-  Calendar = 'YYYY-MM-DD',
+interface ITrainingFilters {
+  userId: string
+
+  _id?: string
+  date?: string
 }
 
-// TODO move to date utils
-export const formatDate = (date: MomentInput, format: string = DateFormatEnum.Default): string => {
-  return moment(date).format(format)
+export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining[] | null> => {
+  const filterQuery: MongooseFilterQuery<ITraining> = { userId: filters?.userId }
+
+  if (filters?._id) {
+    filterQuery._id = filters._id
+  }
+
+  if (filters?.date) {
+    filterQuery.date = {
+      $gte: getStartOfDay(filters.date),
+      $lte: getEndOfDay(filters.date),
+    }
+  }
+
+  try {
+    return await TrainingSchema.find(filterQuery)
+  } catch (e) {
+    return null
+  }
 }
 
-let trainings: ITraining[] = [
-  {
-    id: '1',
-    name: 'Training today',
-    date: moment(),
-    exerciseList: [],
-  },
-  {
-    id: '12',
-    name: 'Training today 2',
-    date: moment(),
-    exerciseList: [],
-  },
-]
-
-export const getTrainingById = (id: string) => {
-  return trainings.find((x) => x.id === id)
-}
-
-export const getTrainingByDate = (date: MomentInput) => {
-  const searchDate = formatDate(date)
-
-  return trainings.filter((x) => formatDate(x.date) === searchDate)
-}
-
-export const createTraining = (req: ITrainingCreate): ITraining | null => {
-  const training: ITraining = { ...req, id: generateId() }
-
+export const createTraining = async (training: ITrainingCreate, userId: string): Promise<ITraining | null> => {
   if (!isTrainingValid(training)) {
     return null
   }
 
-  trainings = trainings.concat(training)
-  return training
+  try {
+    return await TrainingSchema.create({ ...training, userId })
+  } catch (e) {
+    return null
+  }
 }
 
-export const removeTrainingById = (id: string): boolean => {
-  if (!id) {
+export const removeTrainingById = async (filters: Pick<ITrainingFilters, '_id' | 'userId'>): Promise<boolean> => {
+  if (!filters._id || !filters.userId) {
     return false
   }
 
-  if (!trainings.find((x) => x.id === id)) {
+  try {
+    const deleteStatus = await TrainingSchema.remove({ _id: filters._id, userId: filters.userId })
+    return deleteStatus.deletedCount === 1
+  } catch (e) {
     return false
   }
-
-  trainings = trainings.filter((x) => x.id !== id)
-  return true
 }
 
-export const updateTraining = (id: string, req: ITraining): ITraining | null => {
-  if (!isTrainingValid(req)) {
+export const updateTraining = async (
+  filters: ITrainingFilters,
+  training: Partial<ITraining>
+): Promise<ITraining | null> => {
+  if (!isTrainingValid(training)) {
     return null
   }
 
-  if (!trainings.find((x) => x.id === id)) {
+  delete training._id
+  delete training.userId
+  delete training.createdAt
+  delete training.updatedAt
+
+  try {
+    const updated = await TrainingSchema.updateOne(filters, training)
+
+    if (updated.ok !== 1) {
+      throw `Cannot update`
+    }
+
+    return await TrainingSchema.findOne(filters)
+  } catch (e) {
     return null
   }
-
-  trainings = trainings.filter((x) => x.id !== id).concat(req)
-  return req
 }

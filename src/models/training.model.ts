@@ -1,22 +1,48 @@
 import { MomentInput } from 'moment'
+import { Document } from 'mongoose'
+import { BigSource } from 'big.js'
 
-export interface ITraining {
-  id: string
-  date: MomentInput
-  name: string
-  exerciseList: any
+export interface ISeries {
+  _id: string
+
+  repeats: BigSource
+  weight: BigSource
 }
 
-export type ITrainingCreate = Omit<ITraining, 'id'>
+export interface ITrainingExercise {
+  _id: string
+  exerciseId: string
 
-export const isTrainingValid = (training?: Partial<ITraining>): boolean => {
+  sequenceNumber: number
+  userWeight: BigSource
+
+  seriesList: ISeries[]
+}
+
+export interface ITraining {
+  _id: string
+  userId: string
+
+  name: string
+  date: MomentInput
+  exerciseList: ITrainingExercise[]
+
+  createdAt: MomentInput
+  updatedAt: MomentInput
+}
+
+export type ITrainingDocument = Document & ITraining
+
+export type ITrainingCreate = Omit<ITraining, '_id' | 'userId'>
+
+export const isTrainingValid = (training?: Partial<ITrainingCreate>): boolean => {
   if (!training) {
     return false
   }
 
-  const { date, exerciseList, id, name } = training
+  const { date, exerciseList, name } = training
 
-  if (!date || !exerciseList || !id || !name) {
+  if (!date || !exerciseList || !name) {
     return false
   }
 
