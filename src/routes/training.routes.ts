@@ -6,8 +6,10 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
   server.get('/', { preValidation: [server.verifyJwt] }, async (req, reply) => {
     const userId = req.headers.user
     const date = req.query.date
+    const dateStart = req.query.startDate
+    const dateEnd = req.query.endDate
 
-    const trainings = await getTrainings({ date, userId })
+    const trainings = await getTrainings({ date, userId, dateEnd, dateStart })
 
     if (!trainings) {
       reply.code(400).send({ message: 'Not found by date' })

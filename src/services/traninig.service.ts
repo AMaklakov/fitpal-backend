@@ -2,12 +2,16 @@ import { isTrainingValid, ITraining, ITrainingCreate } from '@models/training.mo
 import { TrainingSchema } from '@schemas/training.schema'
 import { MongooseFilterQuery } from 'mongoose'
 import { getEndOfDay, getStartOfDay } from '@util/date.util'
+import { MomentInput } from 'moment'
 
 interface ITrainingFilters {
   userId: string
 
   _id?: string
   date?: string
+
+  dateStart?: MomentInput
+  dateEnd?: MomentInput
 }
 
 export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining[] | null> => {
@@ -21,6 +25,13 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
     filterQuery.date = {
       $gte: getStartOfDay(filters.date),
       $lte: getEndOfDay(filters.date),
+    }
+  }
+
+  if (filters?.dateStart && filters?.dateEnd) {
+    filterQuery.date = {
+      $gte: getStartOfDay(filters.dateStart),
+      $lte: getEndOfDay(filters.dateEnd),
     }
   }
 
