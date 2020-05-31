@@ -16,6 +16,7 @@ const TrainingExercise = new Schema({
 
   exerciseId: { type: ObjectId, ref: 'Exercise', required: true },
   userWeight: { type: String, required: true },
+  type: { type: Number, enum: [0, 1, 2], default: 0 },
 
   seriesList: [Series],
 })
