@@ -24,6 +24,7 @@ export interface ITraining {
   userId: string
 
   name: string
+  color: string
   date: MomentInput
   exerciseList: ITrainingExercise[]
 
@@ -40,9 +41,9 @@ export const isTrainingValid = (training?: Partial<ITrainingCreate>): boolean =>
     return false
   }
 
-  const { date, exerciseList, name } = training
+  const { date, exerciseList, name, color } = training
 
-  if (!date || !exerciseList || !name) {
+  if (!date || !exerciseList || !name || !color) {
     return false
   }
 

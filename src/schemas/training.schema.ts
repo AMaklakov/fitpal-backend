@@ -26,6 +26,7 @@ const Training: Schema<ITrainingDocument> = new Schema({
   userId: { type: ObjectId, ref: 'User', required: true },
 
   name: { type: String, required: true },
+  color: { type: String, default: '#DF737F' },
   date: { type: Date, default: moment(), required: true },
   exerciseList: [TrainingExercise],
 
