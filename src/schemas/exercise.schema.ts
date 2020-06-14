@@ -10,6 +10,7 @@ const schema: Schema<IExerciseDocument> = new Schema({
 
   name: { type: String, required: true },
   type: { type: Number, enum: [0, 1, 2], default: 0 },
+  description: { type: String },
 
   createdAt: { type: Date, default: moment() },
   updatedAt: { type: Date, default: moment() },

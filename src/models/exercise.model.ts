@@ -28,6 +28,7 @@ export interface IExercise {
 
   type: ExerciseTypes
   name: string
+  description?: string
 
   createdAt: MomentInput
   updatedAt: MomentInput
