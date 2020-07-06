@@ -12,9 +12,7 @@ export const login = async (user: IAuth): Promise<IUserDocument | null> => {
 }
 
 export const register = async (user: ICreateUser): Promise<IUserDocument | null> => {
-  if (!validateUser(user)) {
-    return null
-  }
+  validateUser(user)
 
   const createdUser = await UserSchema.create({ ...user, password: createHash(user.password) })
 
