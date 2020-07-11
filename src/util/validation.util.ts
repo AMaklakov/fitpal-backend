@@ -17,3 +17,5 @@ export class InvalidPasswordError extends Error {
 }
 
 export const isEmail = (email: string): boolean => /^[\w-_]+@[\w-_]+(?:\.\w+)+$/.test(email)
+
+export const isPassword = (password: string): boolean => password.length >= 6 && password.length <= 40

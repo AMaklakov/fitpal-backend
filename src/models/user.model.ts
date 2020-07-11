@@ -1,7 +1,7 @@
 import { Document } from 'mongoose'
 import { isPresent, WithRequired } from '@util/type.util'
 import { MomentInput } from 'moment'
-import { isEmail, InvalidRequestError, InvalidEmailError } from 'util/validation.util'
+import { isEmail, InvalidRequestError, InvalidEmailError, isPassword, InvalidPasswordError } from 'util/validation.util'
 
 export interface IUser {
   _id: string
@@ -38,6 +38,10 @@ export const validateUser = (user: ICreateUser) => {
 
   if (!isEmail(user.email)) {
     return new InvalidEmailError('Email is not valid')
+  }
+
+  if (!isPassword(user.password)) {
+    return new InvalidPasswordError('Password is not valid')
   }
 
   return null
