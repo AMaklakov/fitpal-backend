@@ -37,7 +37,10 @@ export const getExercises = async (filters?: Partial<IExercise>) => {
   }
 }
 
-export const createExercise = async (ex: Partial<ICreateExercise>, userId: string): Promise<ICreateExercise | null> => {
+export const createExercise = async (
+  ex: Partial<ICreateExercise>,
+  userId?: string
+): Promise<ICreateExercise | null> => {
   if (!isExerciseValid(ex) || !userId) {
     return null
   }
@@ -50,7 +53,7 @@ export const createExercise = async (ex: Partial<ICreateExercise>, userId: strin
   }
 }
 
-export const updateExercise = async (ex: IExercise, userId: string): Promise<IExercise | null> => {
+export const updateExercise = async (ex: IExercise, userId?: string): Promise<IExercise | null> => {
   if (!isExerciseValid(ex) || !userId) {
     return null
   }
