@@ -1,7 +1,7 @@
 import { Document } from 'mongoose'
 import { isPresent, WithRequired } from '@util/type.util'
 import { MomentInput } from 'moment'
-import { isEmail, ValidationException } from 'util/validation.util'
+import { isEmail, InvalidRequestError, InvalidEmailError } from 'util/validation.util'
 
 export interface IUser {
   _id: string
@@ -27,18 +27,18 @@ export type IAuth = Pick<IUser, 'password' | 'email'>
 
 export type IUserDocument = IUser & Document
 
-export const validateUser = (user: ICreateUser): user is ICreateUser => {
+export const validateUser = (user: ICreateUser) => {
   if (!user) {
-    throw ValidationException('User is not defined')
+    return new InvalidRequestError('User is not provided')
   }
 
   if (!isPresent(user.email) || !isPresent(user.password)) {
-    throw ValidationException('Password or Email is not provided')
+    return new InvalidRequestError('Email or Password is not provided')
   }
 
   if (!isEmail(user.email)) {
-    throw ValidationException('Invalid Email')
+    return new InvalidEmailError('Email is not valid')
   }
 
-  return true
+  return null
 }

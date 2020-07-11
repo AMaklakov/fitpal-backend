@@ -1,18 +1,19 @@
-export interface IException {
-  message: string
-  getMessage: () => string
-}
-
-export const ValidationException = (message: string): IException => {
-  const validationException: IException = {
-    message,
-    getMessage: function (): string {
-      return this.message
-    },
+export class InvalidRequestError extends Error {
+  constructor(message: string) {
+    super('Invalid Request: ' + message)
   }
-  return validationException
 }
 
-export const isEmail = (email: string): boolean => {
-  return /^[\w-_]+@[\w-_]+(?:\.\w+)+$/.test(email)
+export class InvalidEmailError extends Error {
+  constructor(message: string) {
+    super('Invalid Email: ' + message)
+  }
 }
+
+export class InvalidPasswordError extends Error {
+  constructor(message: string) {
+    super('Invalid Password: ' + message)
+  }
+}
+
+export const isEmail = (email: string): boolean => /^[\w-_]+@[\w-_]+(?:\.\w+)+$/.test(email)
