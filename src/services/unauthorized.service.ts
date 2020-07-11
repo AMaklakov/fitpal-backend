@@ -11,12 +11,21 @@ export const login = async (user: IAuth): Promise<IUserDocument | null> => {
   return foundUser
 }
 
-export const register = async (user: ICreateUser): Promise<IUserDocument | null> => {
-  if (!validateUser(user)) {
-    return null
+export const register = async (
+  user: ICreateUser
+): Promise<{ user: IUserDocument | null; error: ReturnType<typeof validateUser> }> => {
+  const validationResult = validateUser(user)
+  if (validationResult !== null) {
+    return {
+      user: null,
+      error: validationResult,
+    }
   }
 
   const createdUser = await UserSchema.create({ ...user, password: createHash(user.password) })
 
-  return createdUser
+  return {
+    user: createdUser,
+    error: null,
+  }
 }

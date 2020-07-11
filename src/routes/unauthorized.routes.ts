@@ -9,15 +9,13 @@ export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, Server
 ) => {
   server.post('/register', async (req, reply) => {
     const user = req.body.user
-    const createdUser = await register(user)
+    const registeredUser = await register(user)
 
-    if (!createdUser) {
+    if (registeredUser.error) {
       reply.code(400)
       reply.send({
-        message: 'User is invalid',
+        message: registeredUser.error.message,
       })
-
-      return
     }
 
     reply.code(201)
