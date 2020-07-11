@@ -1,6 +1,7 @@
 import { FastifyInstance, Plugin } from 'fastify'
 import { IncomingMessage, ServerResponse } from 'http'
 import { login, register } from '@services/unauthorized.service'
+import { isPresent } from 'util/type.util'
 
 export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (
   server,
@@ -27,12 +28,18 @@ export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, Server
 
   server.post('/login', async (req, reply) => {
     const user = req.body.user
-    const foundUser = await login(user)
+    const { user: foundUser, error } = await login(user)
+
+    if (error) {
+      reply.code(400)
+      reply.send({
+        message: error.message,
+      })
+
+      return
+    }
 
     if (!foundUser) {
-      reply.code(400)
-      reply.send({ message: 'Data is invalid' })
-
       return
     }
 

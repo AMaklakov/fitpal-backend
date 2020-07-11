@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-console,@typescript-eslint/ban-ts-ignore */
 import sourceMapSupport from 'source-map-support'
 import fastify from 'fastify'
@@ -12,6 +13,7 @@ import dotenvFlow from 'dotenv-flow'
 import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 import { connectToDb } from '@util/connect'
 import { jwtMiddleware } from '@middlewares/jwt.middleware'
+import { nextTick } from 'process'
 
 sourceMapSupport.install()
 dotenvFlow.config()
@@ -27,7 +29,27 @@ const serverHttpsOptions = {
 }
 
 const server = fastify({
-  logger: true,
+  logger: {
+    prettyPrint: true,
+    serializers: {
+      res(reply: { [key: string]: any }) {
+        return {
+          statusCode: reply.statusCode,
+          payload: JSON.parse(reply.payload),
+        }
+      },
+      req(request: { [key: string]: any }) {
+        return {
+          method: request.method,
+          url: request.url,
+          path: request.path,
+          parameters: request.parameters,
+          headers: request.headers,
+          body: request.body,
+        }
+      },
+    },
+  },
   ...(USE_HTTPS ? serverHttpsOptions : {}),
 })
 
@@ -37,6 +59,17 @@ server
     dotfiles: 'allow',
   })
   .register(jwtMiddleware)
+  .addHook('preHandler', function (req, reply, done) {
+    if (req.body) {
+      req.log.info({ body: req.body }, '\n')
+    }
+    done()
+  })
+  // @ts-ignore
+  .addHook('onSend', (request, reply, payload, next) => {
+    Object.assign(reply.res, { payload })
+    next()
+  })
   .register(fastifyHelmet)
   // @ts-ignore
   .register(fastifyCors, { origin: false })

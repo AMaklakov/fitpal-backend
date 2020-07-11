@@ -14,8 +14,9 @@ const schema: Schema<IUserDocument> = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 
-  age: { type: Number },
-  weight: { type: Number, required: true },
+  age: { type: String },
+  weight: { type: String, required: true },
+  height: { type: String, required: true },
   isMale: { type: Boolean, required: true, default: true },
 
   updatedAt: { type: Date, default: moment() },
