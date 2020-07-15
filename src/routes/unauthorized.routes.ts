@@ -1,13 +1,10 @@
-import { FastifyInstance, Plugin } from 'fastify'
-import { IncomingMessage, ServerResponse } from 'http'
 import { login, register } from '@services/unauthorized.service'
+import { ICreateUser } from '@models/user.model'
+import { IHeaders } from '@routes/types'
+import { FastifyPlugin } from 'fastify'
 
-export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (
-  server,
-  opts,
-  next
-) => {
-  server.post('/register', async (req, reply) => {
+export const unauthorizedRoutes: FastifyPlugin = (server, opts, next) => {
+  server.post<{ Body: { user: ICreateUser } }>('/register', async (req, reply) => {
     const user = req.body.user
     const registeredUser = await register(user)
 
@@ -25,14 +22,20 @@ export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, Server
     return
   })
 
-  server.post('/login', async (req, reply) => {
+  server.post<{ Body: { user: ICreateUser } }>('/login', async (req, reply) => {
     const user = req.body.user
-    const foundUser = await login(user)
+    const { user: foundUser, error } = await login(user)
+
+    if (error) {
+      reply.code(400)
+      reply.send({
+        message: error.message,
+      })
+
+      return
+    }
 
     if (!foundUser) {
-      reply.code(400)
-      reply.send({ message: 'Data is invalid' })
-
       return
     }
 
@@ -43,7 +46,7 @@ export const unauthorizedRoutes: Plugin<FastifyInstance, IncomingMessage, Server
     return
   })
 
-  server.post('/logout', { preValidation: [server.verifyJwt] }, (req, reply) => {
+  server.post<IHeaders>('/logout', { preValidation: [server.verifyJwt] }, (req, reply) => {
     // token should already be provided (from preValidation)
     const token = req.headers.authorization?.split(' ')?.[1]
 

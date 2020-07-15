@@ -5,7 +5,7 @@ import { getEndOfDay, getStartOfDay } from '@util/date.util'
 import { MomentInput } from 'moment'
 
 interface ITrainingFilters {
-  userId: string
+  userId?: string
 
   _id?: string
   date?: string
@@ -42,7 +42,7 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
   }
 }
 
-export const createTraining = async (training: ITrainingCreate, userId: string): Promise<ITraining | null> => {
+export const createTraining = async (training: ITrainingCreate, userId?: string): Promise<ITraining | null> => {
   if (!isTrainingValid(training)) {
     return null
   }

@@ -6,7 +6,8 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 export const jwtMiddleware = fastifyPlugin((server, options, next) => {
   server
     .register(fastifyJWT, { secret: 'supersecret' })
-    .decorate('verifyJwt', async (request: FastifyRequest, reply: FastifyReply<any>) => {
+    // @ts-ignore
+    .decorate('verifyJwt', async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         await request.jwtVerify()
       } catch (err) {
