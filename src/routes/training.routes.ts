@@ -8,8 +8,9 @@ export const trainingRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResp
     const date = req.query.date
     const dateStart = req.query.startDate
     const dateEnd = req.query.endDate
+    const exerciseId = req.query.exerciseId
 
-    const trainings = await getTrainings({ date, userId, dateEnd, dateStart })
+    const trainings = await getTrainings({ date, userId, dateEnd, dateStart, exerciseId })
 
     if (!trainings) {
       reply.code(400).send({ message: 'Not found by date' })

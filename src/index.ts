@@ -13,7 +13,6 @@ import dotenvFlow from 'dotenv-flow'
 import { HTTPS_CA, HTTPS_CERT, HTTPS_KEY } from '@const/https-setup'
 import { connectToDb } from '@util/connect'
 import { jwtMiddleware } from '@middlewares/jwt.middleware'
-import { nextTick } from 'process'
 
 sourceMapSupport.install()
 dotenvFlow.config()
@@ -35,7 +34,6 @@ const server = fastify({
       res(reply: { [key: string]: any }) {
         return {
           statusCode: reply.statusCode,
-          payload: JSON.parse(reply.payload),
         }
       },
       req(request: { [key: string]: any }) {

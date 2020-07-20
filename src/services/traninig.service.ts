@@ -9,6 +9,7 @@ interface ITrainingFilters {
 
   _id?: string
   date?: string
+  exerciseId?: string
 
   dateStart?: MomentInput
   dateEnd?: MomentInput
@@ -25,6 +26,12 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
     filterQuery.date = {
       $gte: getStartOfDay(filters.date),
       $lte: getEndOfDay(filters.date),
+    }
+  }
+
+  if (filters?.exerciseId) {
+    filterQuery.exerciseList = {
+      $elemMatch: { _id: filters.exerciseId },
     }
   }
 
