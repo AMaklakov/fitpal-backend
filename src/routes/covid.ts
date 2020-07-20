@@ -1,10 +1,9 @@
-import { FastifyInstance, Plugin } from 'fastify'
-import { IncomingMessage, ServerResponse } from 'http'
 import axios from 'axios'
+import { FastifyPlugin } from 'fastify'
 
 const GET_COVID_DATA_URI = 'https://pomber.github.io/covid19/timeseries.json'
 
-export const covidRoutes: Plugin<FastifyInstance, IncomingMessage, ServerResponse, any> = (server, opts, next) => {
+export const covidRoutes: FastifyPlugin = (server, opts, next) => {
   server.get('/all', { preValidation: [server.verifyJwt] }, async (request, reply) => {
     try {
       const res = await axios.get(GET_COVID_DATA_URI)

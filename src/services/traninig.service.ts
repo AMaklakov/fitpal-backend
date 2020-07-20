@@ -5,7 +5,7 @@ import { getEndOfDay, getStartOfDay } from '@util/date.util'
 import { MomentInput } from 'moment'
 
 interface ITrainingFilters {
-  userId: string
+  userId?: string
 
   _id?: string
   date?: string
@@ -31,7 +31,7 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
 
   if (filters?.exerciseId) {
     filterQuery.exerciseList = {
-      $elemMatch: { _id: filters.exerciseId },
+      $elemMatch: { exerciseId: filters.exerciseId },
     }
   }
 
@@ -41,7 +41,6 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
       $lte: getEndOfDay(filters.dateEnd),
     }
   }
-
   try {
     return await TrainingSchema.find(filterQuery)
   } catch (e) {
@@ -49,7 +48,7 @@ export const getTrainings = async (filters: ITrainingFilters): Promise<ITraining
   }
 }
 
-export const createTraining = async (training: ITrainingCreate, userId: string): Promise<ITraining | null> => {
+export const createTraining = async (training: ITrainingCreate, userId?: string): Promise<ITraining | null> => {
   if (!isTrainingValid(training)) {
     return null
   }
