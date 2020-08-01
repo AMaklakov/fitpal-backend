@@ -4,7 +4,7 @@ import { ITrainingCreate } from '@models/training.model'
 import { FastifyPlugin } from 'fastify'
 
 export const trainingRoutes: FastifyPlugin = (server, opts, next) => {
-  server.get<IHeaders & { Querystring: { date?: string; startDate?: string; endDate?: string } }>(
+  server.get<IHeaders & { Querystring: { date?: string; startDate?: string; endDate?: string; exerciseId?: string } }>(
     '/',
     { preValidation: [server.verifyJwt] },
     async (req, reply) => {
@@ -12,11 +12,12 @@ export const trainingRoutes: FastifyPlugin = (server, opts, next) => {
       const date = req.query.date
       const dateStart = req.query.startDate
       const dateEnd = req.query.endDate
+      const exerciseId = req.query.exerciseId
 
-      const trainings = await getTrainings({ date, userId, dateEnd, dateStart })
+      const trainings = await getTrainings({ date, userId, dateEnd, dateStart, exerciseId })
 
       if (!trainings) {
-        reply.code(400).send({ message: 'Not found by date' })
+        reply.code(400).send({ message: 'Not found' })
 
         return
       }
