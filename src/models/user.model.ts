@@ -27,6 +27,8 @@ export type ICreateUser = WithRequired<
   'email' | 'password' | 'weight' | 'height' | 'isMale'
 >
 
+export type IUpdateUser = Pick<IUser, '_id' | 'weight'>
+
 export type IAuth = Pick<IUser, 'password' | 'email'>
 
 export type IUserDocument = IUser & Document
@@ -63,6 +65,14 @@ export const validateCreateUser = (user: ICreateUser) => {
 
   if (!isPresent(user.height) || !UserValidation.isHeight(user.height)) {
     return new UserValidation.InvalidHeightError('Height must be between 50 and 350')
+  }
+
+  return null
+}
+
+export const validateUpdateUser = (user: IUpdateUser) => {
+  if (!isPresent(user.weight) || !UserValidation.isWeight(user.weight)) {
+    return new UserValidation.InvalidWeightError('Weight must be between 30 and 500')
   }
 
   return null
