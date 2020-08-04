@@ -16,6 +16,7 @@ const schema: Schema<IUserDocument> = new Schema({
 
   age: { type: String },
   weight: { type: String, required: true },
+  weightHistory: { type: [String], default: [] },
   height: { type: String, required: true },
   isMale: { type: Boolean, required: true, default: true },
 
