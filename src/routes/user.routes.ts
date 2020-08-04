@@ -10,12 +10,12 @@ export const userRoutes: FastifyPlugin = (server, opts, next) => {
     async (req, reply) => {
       const user = req.body.user
 
-      const updatedUser = await updateUser({ _id: user._id }, user)
+      const updated = await updateUser({ _id: user._id }, user)
 
-      if (updatedUser.error) {
+      if (updated.error) {
         reply.code(201)
         reply.send({
-          message: updatedUser.error.message,
+          message: updated.error.message,
         })
         return
       }
@@ -23,6 +23,7 @@ export const userRoutes: FastifyPlugin = (server, opts, next) => {
       reply.code(201)
       reply.send({
         message: 'User was successively udpated',
+        user: updated.user,
       })
       return
     }

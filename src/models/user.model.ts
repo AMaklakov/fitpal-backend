@@ -16,6 +16,7 @@ export interface IUser {
   isMale: boolean
   age: string
   weight: string
+  weightHistory: string[]
   height: string
 
   createdAt: MomentInput
@@ -27,7 +28,7 @@ export type ICreateUser = WithRequired<
   'email' | 'password' | 'weight' | 'height' | 'isMale'
 >
 
-export type IUpdateUser = Pick<IUser, '_id' | 'weight'>
+export type IUpdateUser = Omit<IUser, 'password' | 'createdAt' | 'updatedAt'>
 
 export type IAuth = Pick<IUser, 'password' | 'email'>
 
